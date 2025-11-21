@@ -117,8 +117,8 @@ class VoteAdmin(admin.ModelAdmin):
         return False
     
     def has_delete_permission(self, request, obj=None):
-        """Prevent vote deletion in admin (audit trail)."""
-        return False
+        """Allow vote deletion in admin if superuser."""
+        return request.user.is_superuser
     
     def get_ranking_preview(self, obj):
         """Display first 3 candidates in vote ranking."""
@@ -157,5 +157,5 @@ class VoterSessionAdmin(admin.ModelAdmin):
         return False
     
     def has_delete_permission(self, request, obj=None):
-        """Prevent session deletion (audit trail)."""
-        return False
+        """Allow session deletion if superuser."""
+        return request.user.is_superuser
