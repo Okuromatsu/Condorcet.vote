@@ -1,6 +1,7 @@
 # Core
 Django==4.2.7
 python-decouple==3.8
+django-cors-headers==4.3.1
 
 # Database
 psycopg2-binary==2.9.9

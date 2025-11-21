@@ -78,7 +78,9 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             )
         
         # Referrer policy (limit what referer info is sent)
-        response['Referrer-Policy'] = 'no-referrer'
+        # Use strict-origin-when-cross-origin instead of no-referrer to ensure
+        # Referer header is sent for same-origin requests (required for CSRF)
+        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         
         # Feature policy / Permissions-Policy
         response['Permissions-Policy'] = (

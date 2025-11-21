@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Required for sitemaps
+    'django.contrib.sitemaps',
     'corsheaders',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # i18n language selection
     'corsheaders.middleware.CorsMiddleware',
@@ -139,13 +142,21 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Site configuration
+SITE_ID = 1
 SITE_URL = config('SITE_URL', default='http://localhost:8000').rstrip('/')
 SITE_NAME = 'Condorcet Vote'
 
 # Use simpler storage for development to avoid manifest issues
 # Only use CompressedManifestStaticFilesStorage after running collectstatic in production
-if DEBUG:
-    # Development: Use simple storage (no manifest required)
+# Check if we are in a build process (dummy secret key)
+IS_BUILD_PROCESS = SECRET_KEY == 'dummy-key-for-build'
+
+# Debug print to help diagnose build issues
+if IS_BUILD_PROCESS:
+    print(f"Build process detected. SECRET_KEY={SECRET_KEY}. Using simple StaticFilesStorage.")
+
+if DEBUG or IS_BUILD_PROCESS:
+    # Development or Build: Use simple storage (no manifest required)
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 else:
     # Production: Use whitenoise with manifest for efficiency
@@ -175,8 +186,8 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
     CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
     SECURE_BROWSER_XSS_FILTER = config('SECURE_BROWSER_XSS_FILTER', default=True, cast=bool)
-    SESSION_COOKIE_SAMESITE = config('SESSION_COOKIE_SAMESITE', default='Strict')
-    CSRF_COOKIE_SAMESITE = config('CSRF_COOKIE_SAMESITE', default='Strict')
+    SESSION_COOKIE_SAMESITE = config('SESSION_COOKIE_SAMESITE', default='Lax')
+    CSRF_COOKIE_SAMESITE = config('CSRF_COOKIE_SAMESITE', default='Lax')
     SECURE_CONTENT_SECURITY_POLICY = {
         'default-src': ("'self'",),
         'script-src': ("'self'", "'unsafe-inline'"),  # Consider removing unsafe-inline
