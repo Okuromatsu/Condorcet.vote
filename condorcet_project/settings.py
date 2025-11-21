@@ -100,7 +100,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
         }
     }
 
@@ -161,6 +161,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ============================================================================
 # SECURITY SETTINGS (CRITICAL FOR PRODUCTION)
 # ============================================================================
+
+# Trust the X-Forwarded-Proto header coming from the proxy (Traefik)
+# This is required to prevent infinite redirect loops when running behind a proxy
+SECURE_PROXY_SSL_HEADER = config('SECURE_PROXY_SSL_HEADER', default=None)
+if SECURE_PROXY_SSL_HEADER:
+    SECURE_PROXY_SSL_HEADER = tuple(SECURE_PROXY_SSL_HEADER.split(','))
 
 # Only set to False in production (DEBUG must be False)
 if not DEBUG:
