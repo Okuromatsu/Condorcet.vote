@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Required for sitemaps
+    'django.contrib.sitemaps',
     'corsheaders',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -140,6 +142,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Site configuration
+SITE_ID = 1
 SITE_URL = config('SITE_URL', default='http://localhost:8000').rstrip('/')
 SITE_NAME = 'Condorcet Vote'
 

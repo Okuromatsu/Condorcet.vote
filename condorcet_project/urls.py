@@ -14,6 +14,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import set_language
+from django.contrib.sitemaps.views import sitemap
+from django.views.generic import TemplateView
+from voting.sitemaps import StaticViewSitemap, PollSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'polls': PollSitemap,
+}
 
 urlpatterns = [
     # Django admin panel
@@ -21,6 +29,10 @@ urlpatterns = [
     
     # i18n language selection (with named URL)
     path('i18n/setlang/', set_language, name='set_language'),
+
+    # SEO: Sitemap and Robots.txt
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
 
 # i18n URL patterns (language prefix on all URLs)
