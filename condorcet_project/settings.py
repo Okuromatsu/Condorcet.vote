@@ -147,6 +147,10 @@ SITE_NAME = 'Condorcet Vote'
 # Check if we are in a build process (dummy secret key)
 IS_BUILD_PROCESS = SECRET_KEY == 'dummy-key-for-build'
 
+# Debug print to help diagnose build issues
+if IS_BUILD_PROCESS:
+    print(f"Build process detected. SECRET_KEY={SECRET_KEY}. Using simple StaticFilesStorage.")
+
 if DEBUG or IS_BUILD_PROCESS:
     # Development or Build: Use simple storage (no manifest required)
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
