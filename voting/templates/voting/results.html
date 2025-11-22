@@ -31,9 +31,26 @@
             <div class="card border-success mb-4 shadow">
                 <div class="card-body bg-light">
                     <h5 class="card-title text-success">
-                        🏆 {% trans "Condorcet Winner" %}
+                        🏆 
+                        {% if winner_method == 'condorcet' %}
+                            {% trans "Condorcet Winner" %}
+                        {% else %}
+                            {% trans "Winner" %} ({% trans "via" %} {{ winner_method|title }})
+                        {% endif %}
                     </h5>
                     <h2 class="mb-0 text-success">{{ winner.name }}</h2>
+                    
+                    {% if winner_method != 'condorcet' %}
+                        <div class="alert alert-info mt-3 mb-0">
+                            <small>
+                                <strong>{% trans "Note:" %}</strong> 
+                                {% trans "No clear Condorcet winner was found (no candidate beats all others)." %}
+                                <br>
+                                {% trans "The winner was determined using the" %} <strong>{{ winner_method|title }}</strong> {% trans "tiebreaker method." %}
+                            </small>
+                        </div>
+                    {% endif %}
+
                     {% if winner.description %}
                         <p class="text-muted mt-2 mb-0">{{ winner.description }}</p>
                     {% endif %}

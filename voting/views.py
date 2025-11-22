@@ -391,10 +391,11 @@ def results_poll(request, poll_id):
     candidate_dict = {str(c.id): c for c in candidates}
     
     # Calculate results
+    winner_method = None
     if votes_list:
         try:
             # Calculate winner
-            winner_id = calculate_condorcet_winner(votes_list)
+            winner_id, winner_method = calculate_condorcet_winner(votes_list, poll.tiebreaker_method)
             winner = candidate_dict.get(winner_id)
             
             # Get statistics
@@ -464,6 +465,7 @@ def results_poll(request, poll_id):
     context = {
         'poll': poll,
         'winner': winner,
+        'winner_method': winner_method,
         'total_votes': len(votes_list),
         'num_candidates': len(candidates),
         'candidates': candidate_dict,
@@ -607,7 +609,7 @@ def creator_dashboard(request, creator_code):
             votes_queryset = Vote.objects.filter(poll=poll).values_list('ranking', flat=True)
             votes_list = list(votes_queryset)
             try:
-                winner_id = calculate_condorcet_winner(votes_list)
+                winner_id, _ = calculate_condorcet_winner(votes_list, poll.tiebreaker_method)
                 winner = poll.candidate_set.get(id=winner_id) if winner_id else None
             except Exception:
                 pass
@@ -682,9 +684,10 @@ def poll_api_results(request, poll_id):
     
     # Calculate results
     winner_id = None
+    winner_method = None
     if votes_list:
         try:
-            winner_id = calculate_condorcet_winner(votes_list)
+            winner_id, winner_method = calculate_condorcet_winner(votes_list, poll.tiebreaker_method)
         except Exception as e:
             logger.error(f"Error calculating winner: {str(e)}")
     
@@ -707,4 +710,5 @@ def poll_api_results(request, poll_id):
         },
         'candidates': candidates_dict,
         'winner': winner_id,
+        'winner_method': winner_method,
     })
