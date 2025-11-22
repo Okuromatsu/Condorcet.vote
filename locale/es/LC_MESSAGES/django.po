@@ -953,10 +953,6 @@ msgstr "Acceder al panel del creador"
 msgid "Enter your creator code to manage your polls."
 msgstr "Ingrese su código de creador para administrar sus encuestas."
 
-#: voting/templates/voting/dashboard_login.html:20
-msgid "Creator Code"
-msgstr "Código de creador"
-
 #: voting/templates/voting/dashboard_login.html:26
 msgid "If you did not save your creator code, unfortunately we cannot recover it for you as we do not store personal information."
 msgstr "Si no guardó su código de creador, lamentablemente no podemos recuperarlo por usted ya que no almacenamos información personal."
