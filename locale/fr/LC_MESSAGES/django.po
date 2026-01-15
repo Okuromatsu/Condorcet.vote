@@ -1490,5 +1490,6 @@ msgstr "Activez ceci pour les appareils partagés (ex: passer une tablette). Con
 msgid "Warning: This poll allows multiple votes per device. Making it public carries a high risk of manipulation. Are you sure?"
 msgstr "Attention : Ce sondage autorise plusieurs votes par appareil. Le rendre public comporte un risque élevé de manipulation. Êtes-vous sûr ?"
 
-msgid "Create fair polls using the Condorcet voting method. No registration required, just vote and see instant results. "
+#: voting/templates/voting/index.html:11
+msgid "Create fair polls using the Condorcet voting method. No registration required, just vote and see instant results."
 msgstr "Créer des élections et sondages juste en utilisant la méthode de Condorcet. Pas de compte requis, voter simplement et voyer les résultats en direct."
