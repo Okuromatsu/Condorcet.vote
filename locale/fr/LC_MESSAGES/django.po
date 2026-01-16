@@ -1493,3 +1493,15 @@ msgstr "Attention : Ce sondage autorise plusieurs votes par appareil. Le rendre 
 #: voting/templates/voting/index.html:11
 msgid "Create fair polls using the Condorcet voting method. No registration required, just vote and see instant results."
 msgstr "Créer des élections et sondages juste en utilisant la méthode de Condorcet. Pas de compte requis, voter simplement et voyer les résultats en direct."
+
+msgid "Make poll public"
+msgstr "Rendre le sondage public"
+
+msgid "Make this poll public"
+msgstr "Rendre ce sondage public"
+
+msgid "Public polls are visible on the homepage and can be seen by everyone."
+msgstr "Les sondages publics sont visibles sur la page d'accueil et peuvent être vus par tout le monde."
+
+msgid "Polls are private by default (only accessible via a private link)."
+msgstr "Les sondages sont privés par défaut (accessibles uniquement via un lien privé)."

@@ -64,7 +64,6 @@ def create_poll(request):
                 with transaction.atomic():
                     # Create poll from form (is_public=False by default)
                     poll = form.save(commit=False)
-                    poll.is_public = False  # Private by default
                     poll.save()
                     
                     # Create candidates

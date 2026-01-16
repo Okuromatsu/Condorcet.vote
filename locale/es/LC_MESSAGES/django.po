@@ -963,3 +963,17 @@ msgstr "Ingrese su código de creador para administrar sus encuestas."
 #: voting/templates/voting/dashboard_login.html:26
 msgid "If you did not save your creator code, unfortunately we cannot recover it for you as we do not store personal information."
 msgstr "Si no guardó su código de creador, lamentablemente no podemos recuperarlo por usted ya que no almacenamos información personal."
+
+
+
+msgid "Make poll public"
+msgstr "Hacer pública la encuesta"
+
+msgid "Make this poll public"
+msgstr "Hacer pública esta encuesta"
+
+msgid "Public polls are visible on the homepage and can be seen by everyone."
+msgstr "Las encuestas públicas son visibles en la página de inicio y todos pueden verlas."
+
+msgid "Polls are private by default (only accessible via a private link)."
+msgstr "Las encuestas son privadas por defecto (solo accesibles a través de un enlace privado)."

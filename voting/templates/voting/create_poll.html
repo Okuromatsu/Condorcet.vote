@@ -78,6 +78,19 @@
                         </small>
                     </div>
 
+                    <!-- Private/Public Poll -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.is_public }}
+                            <label class="form-check-label" for="{{ form.is_public.id_for_label }}">
+                                {% trans "Make this poll public" %}
+                            </label>
+                        </div>
+                        <small class="form-text text-muted mt-1 d-block">
+                            {% trans "Public polls are visible on the homepage and can be seen by everyone." %}
+                        </small>
+                    </div>
+
                     <!-- Candidates -->
                     <div class="mb-3">
                         <label for="{{ form.candidates.id_for_label }}" class="form-label">
