@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Condorcet Vote 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-18 11:42+0000\n"
+"POT-Creation-Date: 2026-01-18 13:54+0000\n"
 "PO-Revision-Date: 2025-11-20 12:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
@@ -30,35 +30,47 @@ msgstr "Entrez un candidat par ligne (minimum 2, maximum 50)"
 msgid "Candidates"
 msgstr "Candidats"
 
-#: voting/forms.py:51 voting/templates/voting/create_poll.html:20
+#: voting/forms.py:51
+msgid "Number of voters"
+msgstr "Nombre de votants"
+
+#: voting/forms.py:52
+msgid "How many unique passwords to generate (2-100)"
+msgstr "Combien de mots de passe uniques générer (2-100)"
+
+#: voting/forms.py:63 voting/templates/voting/create_poll.html:20
 msgid "Poll Title"
 msgstr "Titre du sondage"
 
-#: voting/forms.py:52 voting/templates/voting/create_poll.html:40
+#: voting/forms.py:64 voting/templates/voting/create_poll.html:40
 msgid "Poll Description"
 msgstr "Description du sondage"
 
-#: voting/forms.py:53 voting/templates/voting/create_poll.html:123
+#: voting/forms.py:65 voting/templates/voting/create_poll.html:86
 msgid "Tiebreaker Method"
 msgstr "Méthode de départage"
 
-#: voting/forms.py:54 voting/templates/voting/create_poll.html:112
+#: voting/forms.py:66 voting/templates/voting/create_poll.html:124
 msgid "Allow multiple votes per device"
 msgstr "Autoriser plusieurs votes par appareil"
 
-#: voting/forms.py:55
+#: voting/forms.py:67
 msgid "Make poll public"
 msgstr "Rendre le sondage public"
 
-#: voting/forms.py:60 voting/templates/voting/create_poll.html:28
+#: voting/forms.py:68
+msgid "Secure vote with unique passwords"
+msgstr "Sécuriser le vote avec des mots de passe uniques"
+
+#: voting/forms.py:73 voting/templates/voting/create_poll.html:28
 msgid "e.g., Best Programming Language?"
 msgstr "ex : Meilleur langage de programmation ?"
 
-#: voting/forms.py:66 voting/templates/voting/create_poll.html:48
+#: voting/forms.py:79 voting/templates/voting/create_poll.html:48
 msgid "Optional details about this poll..."
 msgstr "Détails optionnels pour ce scrutin..."
 
-#: voting/forms.py:80
+#: voting/forms.py:98
 msgid ""
 "Enable this for shared devices (e.g., passing a tablet around). Bypasses "
 "duplicate vote protection."
@@ -66,11 +78,46 @@ msgstr ""
 "Activez ceci pour les appareils partagés (ex: passer une tablette). "
 "Contourne la protection contre les votes en double."
 
-#: voting/forms.py:81
+#: voting/forms.py:99
 msgid "Polls are private by default (only accessible via a private link)."
 msgstr ""
 "Les sondages sont privés par défaut (accessibles uniquement via un lien "
 "privé)."
+
+#: voting/forms.py:100
+msgid ""
+"Generate a list of one-time passwords. Each voter will need a unique "
+"password to vote."
+msgstr ""
+"Générer une liste de mots de passe à usage unique. Chaque votant aura besoin "
+"d'un mot de passe unique pour voter."
+
+#: voting/forms.py:111
+msgid ""
+"You cannot enable both 'Multiple votes per device' and 'Secure password "
+"protection'. Password protection enforces strict one-person-one-vote."
+msgstr ""
+"Vous ne pouvez pas activer à la fois 'Plusieurs votes par appareil' et "
+"'Protection par mot de passe'. La protection par mot de passe impose un vote "
+"unique strict par personne."
+
+#: voting/forms.py:116
+msgid "Number of voters is required when password protection is enabled."
+msgstr ""
+"Le nombre de votants est requis lorsque la protection par mot de passe est "
+"activée."
+
+#: voting/forms.py:118
+msgid "Number of voters must be between 2 and 100."
+msgstr "Le nombre de votants doit être compris entre 2 et 100."
+
+#: voting/forms.py:170
+msgid "Password"
+msgstr "Mot de passe"
+
+#: voting/forms.py:173
+msgid "Enter your unique voting password"
+msgstr "Entrez votre mot de passe de vote unique"
 
 #: voting/templates/voting/about_condorcet.html:4
 msgid "About Condorcet Voting"
@@ -627,6 +674,28 @@ msgstr ""
 "clair (paradoxe). Elle trouve le chemin le plus fort entre les candidats "
 "pour déterminer le gagnant mathématiquement le plus juste."
 
+#: voting/templates/voting/auth.html:5
+msgid "Authentication Required"
+msgstr "Authentification requise"
+
+#: voting/templates/voting/auth.html:12
+msgid "Secure Poll"
+msgstr "Sondage sécurisé"
+
+#: voting/templates/voting/auth.html:16
+msgid "This poll requires a unique one-time password to vote."
+msgstr "Ce sondage nécessite un mot de passe unique à usage unique pour voter."
+
+#: voting/templates/voting/auth.html:26
+msgid "Unlock Voting"
+msgstr "Déverrouiller le vote"
+
+#: voting/templates/voting/auth.html:37
+#: voting/templates/voting/creator_dashboard.html:210
+#: voting/templates/voting/poll_confirmation.html:172
+msgid "Back to Home"
+msgstr "Retour à l'accueil"
+
 #: voting/templates/voting/base.html:11
 msgid "Free Online Ranked Choice Voting Tool"
 msgstr "Outil de vote préférentiel en ligne gratuit"
@@ -652,10 +721,6 @@ msgstr ""
 "préférentiel, sondage condorcet, vote en ligne, scrutin condorcet"
 
 #: voting/templates/voting/base.html:22 voting/templates/voting/base.html:29
-#, fuzzy
-#| msgid ""
-#| "Create and participate in Condorcet voting polls online. A fair and "
-#| "transparent ranked-choice voting system."
 msgid ""
 "Create and participate in Condorcet voting polls. A fair and transparent "
 "ranked-choice voting system."
@@ -677,7 +742,7 @@ msgid "Home"
 msgstr "Accueil"
 
 #: voting/templates/voting/base.html:82
-#: voting/templates/voting/create_poll.html:147
+#: voting/templates/voting/create_poll.html:214
 #: voting/templates/voting/index.html:86
 msgid "Create Poll"
 msgstr "Créer un sondage"
@@ -745,56 +810,77 @@ msgstr "Un candidat par ligne"
 msgid "No duplicate names"
 msgstr "Pas de noms en double"
 
-#: voting/templates/voting/create_poll.html:88
+#: voting/templates/voting/create_poll.html:90
+msgid "How to resolve the Condorcet paradox if no clear winner:"
+msgstr ""
+"Comment résoudre le paradoxe Condorcet s'il n'y a pas de gagnant clair :"
+
+#: voting/templates/voting/create_poll.html:91
+msgid "Learn more"
+msgstr "En savoir plus"
+
+#: voting/templates/voting/create_poll.html:100
 msgid "Make this poll public"
 msgstr "Rendre ce sondage public"
 
-#: voting/templates/voting/create_poll.html:92
+#: voting/templates/voting/create_poll.html:104
 msgid "Public polls are visible on the homepage and can be seen by everyone."
 msgstr ""
 "Les sondages publics sont visibles sur la page d'accueil et peuvent être vus "
 "par tout le monde."
 
-#: voting/templates/voting/create_poll.html:101
+#: voting/templates/voting/create_poll.html:113
 msgid "Advanced Parameters"
 msgstr "Paramètres avancés"
 
-#: voting/templates/voting/create_poll.html:127
-msgid "How to resolve the Condorcet paradox if no clear winner:"
-msgstr ""
-"Comment résoudre le paradoxe Condorcet s'il n'y a pas de gagnant clair :"
+#: voting/templates/voting/create_poll.html:137
+msgid "Secure Poll (One-Time Passwords)"
+msgstr "Sondage sécurisé (mots de passe à usage unique)"
 
-#: voting/templates/voting/create_poll.html:128
-msgid "Learn more"
-msgstr "En savoir plus"
+#: voting/templates/voting/create_poll.html:146
+msgid ""
+"Warning: This increases security but adds friction. You are responsible for "
+"distributing a unique password to each voter securely."
+msgstr ""
+"Attention : Cela augmente la sécurité mais complexifie l'accès. Vous êtes "
+"responsable de la distribution sécurisée d'un mot de passe unique à chaque "
+"votant."
 
 #: voting/templates/voting/create_poll.html:150
+msgid "Number of voters (passwords to generate)"
+msgstr "Nombre de votants (mots de passe à générer)"
+
+#: voting/templates/voting/create_poll.html:154
+msgid "Enter a number between 2 and 100."
+msgstr "Entrez un nombre entre 2 et 100."
+
+#: voting/templates/voting/create_poll.html:217
 #: voting/templates/voting/vote.html:91
 msgid "Cancel"
 msgstr "Annuler"
 
-#: voting/templates/voting/create_poll.html:159
+#: voting/templates/voting/create_poll.html:226
 msgid "Tips:"
 msgstr "Conseils :"
 
-#: voting/templates/voting/create_poll.html:161
+#: voting/templates/voting/create_poll.html:228
 msgid ""
 "Poll titles should be clear questions (e.g., Best Programming Language?)"
 msgstr ""
 "Les titres des sondages doivent être des questions claires (par ex. : "
 "Meilleur langage de programmation ?) "
 
-#: voting/templates/voting/create_poll.html:162
+#: voting/templates/voting/create_poll.html:229
 msgid "Keep candidate names short and distinct"
 msgstr "Gardez les noms des candidats courts et distincts"
 
-#: voting/templates/voting/create_poll.html:163
+#: voting/templates/voting/create_poll.html:230
 msgid "Once created, polls cannot be edited - double-check before submitting!"
 msgstr ""
 "Une fois créés, les sondages ne peuvent pas être modifiés - vérifiez bien "
 "avant de soumettre !"
 
-#: voting/templates/voting/create_poll.html:164
+#: voting/templates/voting/create_poll.html:231
 msgid ""
 "Voters rank candidates by preference - the Condorcet method finds the "
 "fairest winner"
@@ -835,12 +921,12 @@ msgid "Created:"
 msgstr "Créé :"
 
 #: voting/templates/voting/creator_dashboard.html:57
-#: voting/templates/voting/poll_confirmation.html:119
+#: voting/templates/voting/poll_confirmation.html:154
 msgid "Public"
 msgstr "Public"
 
 #: voting/templates/voting/creator_dashboard.html:59
-#: voting/templates/voting/poll_confirmation.html:121
+#: voting/templates/voting/poll_confirmation.html:156
 msgid "Private"
 msgstr "Privé"
 
@@ -861,7 +947,7 @@ msgid "No votes yet"
 msgstr "Pas encore de votes"
 
 #: voting/templates/voting/creator_dashboard.html:101
-#: voting/templates/voting/poll_confirmation.html:102
+#: voting/templates/voting/poll_confirmation.html:137
 msgid "Candidates:"
 msgstr "Candidats :"
 
@@ -946,11 +1032,6 @@ msgstr "Aucun sondage fermé"
 msgid "Create New Poll"
 msgstr "Créer un nouveau sondage"
 
-#: voting/templates/voting/creator_dashboard.html:210
-#: voting/templates/voting/poll_confirmation.html:137
-msgid "Back to Home"
-msgstr "Retour à l'accueil"
-
 #: voting/templates/voting/creator_dashboard.html:220
 #: voting/templates/voting/results.html:188
 msgid "Share Poll"
@@ -962,7 +1043,7 @@ msgstr "Lien de vote :"
 
 #: voting/templates/voting/creator_dashboard.html:228
 #: voting/templates/voting/poll_confirmation.html:37
-#: voting/templates/voting/poll_confirmation.html:68
+#: voting/templates/voting/poll_confirmation.html:103
 #: voting/templates/voting/results.html:198
 msgid "Copy"
 msgstr "Copier"
@@ -1120,10 +1201,8 @@ msgstr ""
 "le gagnant le plus probable."
 
 #: voting/templates/voting/poll_confirmation.html:4
-#, fuzzy
-#| msgid "Created"
 msgid "Poll Created"
-msgstr "Créé"
+msgstr "Sondage créé"
 
 # Poll confirmation page
 #: voting/templates/voting/poll_confirmation.html:11
@@ -1140,94 +1219,112 @@ msgstr "a été créé."
 
 #: voting/templates/voting/poll_confirmation.html:22
 msgid "Save this code to manage your poll (view results, make public, delete):"
-msgstr ""
+msgstr "Enregistrez ce code pour gérer votre sondage (afficher les résultats, le rendre public, le supprimer) :"
 "Enregistrez ce code pour gérer votre sondage (afficher les résultats, le "
 "rendre public, le supprimer) :"
 
 #: voting/templates/voting/poll_confirmation.html:41
-#: voting/templates/voting/poll_confirmation.html:134
+#: voting/templates/voting/poll_confirmation.html:169
 msgid "Go to Creator Dashboard"
 msgstr "Aller au tableau de bord du créateur"
 
-#: voting/templates/voting/poll_confirmation.html:49
+#: voting/templates/voting/poll_confirmation.html:50
+msgid "Voter Passwords"
+msgstr "Mots de passe des électeurs"
+
+#: voting/templates/voting/poll_confirmation.html:54
+msgid "IMPORTANT:"
+msgstr "IMPORTANT :"
+
+#: voting/templates/voting/poll_confirmation.html:55
+msgid ""
+"These passwords are shown ONLY ONCE. Download them now or you will lose "
+"access to them. Each password allows exactly one vote."
+msgstr "Ces mots de passe ne sont affichés qu'UNE SEULE FOIS. Téléchargez-les maintenant ou vous y perdrez l'accès. Chaque mot de passe permet exactement un vote."
+
+#: voting/templates/voting/poll_confirmation.html:61
+msgid "Download passwords.txt"
+msgstr "Télécharger passwords.txt"
+
+#: voting/templates/voting/poll_confirmation.html:84
 msgid "Voting Link"
 msgstr "Lien de vote"
 
-#: voting/templates/voting/poll_confirmation.html:53
+#: voting/templates/voting/poll_confirmation.html:88
 msgid "Share this link with voters:"
 msgstr "Partagez ce lien avec les électeurs :"
 
-#: voting/templates/voting/poll_confirmation.html:77
+#: voting/templates/voting/poll_confirmation.html:112
 msgid "QR Code"
 msgstr "Code QR"
 
-#: voting/templates/voting/poll_confirmation.html:81
+#: voting/templates/voting/poll_confirmation.html:116
 msgid "Voters can scan this QR code to vote:"
 msgstr "Les électeurs peuvent scanner ce code QR pour voter :"
 
-#: voting/templates/voting/poll_confirmation.html:86
+#: voting/templates/voting/poll_confirmation.html:121
 msgid "Download QR Code"
 msgstr "Télécharger le code QR"
 
-#: voting/templates/voting/poll_confirmation.html:94
+#: voting/templates/voting/poll_confirmation.html:129
 msgid "Poll Summary"
 msgstr "Résumé du sondage"
 
-#: voting/templates/voting/poll_confirmation.html:99
+#: voting/templates/voting/poll_confirmation.html:134
 msgid "Question:"
 msgstr "Question :"
 
-#: voting/templates/voting/poll_confirmation.html:108
+#: voting/templates/voting/poll_confirmation.html:143
 msgid "Description:"
 msgstr "Description :"
 
 # Results page
-#: voting/templates/voting/poll_confirmation.html:114
+#: voting/templates/voting/poll_confirmation.html:149
 msgid "Voting Method:"
 msgstr "Méthode de vote :"
 
 # Index page
-#: voting/templates/voting/poll_confirmation.html:114
+#: voting/templates/voting/poll_confirmation.html:149
 msgid "Condorcet"
 msgstr "Condorcet"
 
-#: voting/templates/voting/poll_confirmation.html:117
+#: voting/templates/voting/poll_confirmation.html:152
 msgid "Status:"
 msgstr "Statut :"
 
-#: voting/templates/voting/poll_confirmation.html:131
+#: voting/templates/voting/poll_confirmation.html:166
 msgid "Start Voting"
 msgstr "Commencer à voter"
 
-#: voting/templates/voting/poll_confirmation.html:143
+#: voting/templates/voting/poll_confirmation.html:178
 msgid "Next Steps:"
 msgstr "Prochaines étapes :"
 
-#: voting/templates/voting/poll_confirmation.html:145
+#: voting/templates/voting/poll_confirmation.html:180
 msgid "Share the voting link or QR code with voters"
 msgstr "Partagez le lien de vote ou le code QR avec les électeurs"
 
-#: voting/templates/voting/poll_confirmation.html:146
+#: voting/templates/voting/poll_confirmation.html:181
 msgid "Visit your Creator Dashboard to:"
-msgstr "Visitez votre <strong>Tableau de bord du créateur</strong> pour :"
+msgstr "Visitez votre tableau de bord créateur pour :"
 
-#: voting/templates/voting/poll_confirmation.html:148
+#: voting/templates/voting/poll_confirmation.html:183
 msgid "View live voting results"
 msgstr "Voir les résultats des votes en direct"
 
-#: voting/templates/voting/poll_confirmation.html:149
+#: voting/templates/voting/poll_confirmation.html:184
 msgid "Make the poll public (visible on homepage)"
 msgstr "Rendre le sondage public (visible sur la page d'accueil)"
 
-#: voting/templates/voting/poll_confirmation.html:150
+#: voting/templates/voting/poll_confirmation.html:185
 msgid "Close the poll when done voting"
 msgstr "Fermer le sondage quand le vote est terminé"
 
-#: voting/templates/voting/poll_confirmation.html:151
+#: voting/templates/voting/poll_confirmation.html:186
 msgid "Delete the poll"
 msgstr "Supprimer le sondage"
 
-#: voting/templates/voting/poll_confirmation.html:154
+#: voting/templates/voting/poll_confirmation.html:189
 msgid "Only you with the creator code can modify this poll"
 msgstr "Seul vous avec le code créateur pouvez modifier ce sondage"
 
@@ -1385,6 +1482,108 @@ msgstr ""
 "trouve ensuite le candidat qui gagnerait dans un affrontement équitable "
 "contre n'importe quel autre candidat. Cette méthode est considérée comme "
 "l'un des systèmes de vote les plus équitables."
+
+#: voting/views.py:203 voting/views.py:213
+msgid "This poll is closed and results have not been released."
+msgstr "Ce sondage est fermé et les résultats n'ont pas été publiés."
+
+#: voting/views.py:208
+msgid "This poll is closed. You can only view results."
+msgstr "Ce sondage est fermé. Vous ne pouvez voir que les résultats."
+
+#: voting/views.py:219
+msgid "This poll has reached maximum votes."
+msgstr "Ce sondage a atteint le nombre maximum de votes."
+
+#: voting/views.py:245
+msgid "Authentication successful. You can now vote."
+msgstr "Authentification réussie. Vous pouvez maintenant voter."
+
+#: voting/views.py:248
+msgid "Invalid or already used password."
+msgstr "Mot de passe invalide ou déjà utilisé."
+
+#: voting/views.py:262
+msgid "Poll has no candidates."
+msgstr "Le sondage n'a pas de candidats."
+
+# Messages
+#: voting/views.py:308 voting/views.py:415
+msgid "You have already voted on this poll."
+msgstr "Vous avez déjà voté pour ce sondage."
+
+#: voting/views.py:332
+msgid "Session expired. Please authenticate again."
+msgstr "Session expirée. Veuillez vous authentifier à nouveau."
+
+#: voting/views.py:347
+msgid "This password has already been used."
+msgstr "Ce mot de passe a déjà été utilisé."
+
+#: voting/views.py:408
+msgid "Your vote has been recorded!"
+msgstr "Votre vote a été enregistré !"
+
+#: voting/views.py:421
+msgid "Error recording vote. Please try again."
+msgstr "Erreur lors de l'enregistrement du vote. Veuillez réessayer."
+
+#: voting/views.py:473
+msgid ""
+"Results are only available after the poll is closed or when released by the "
+"creator."
+msgstr ""
+"Les résultats ne sont disponibles qu'une fois le sondage clos ou publiés par "
+"le créateur."
+
+#: voting/views.py:558
+msgid "Error calculating results."
+msgstr "Erreur lors du calcul des résultats."
+
+#: voting/views.py:604
+msgid "Invalid creator code."
+msgstr "Code créateur invalide."
+
+#: voting/views.py:654
+msgid "No polls found for this creator code."
+msgstr "Aucun sondage trouvé pour ce code créateur."
+
+#, python-format
+msgid "Poll \"%(title)s\" reopened!"
+msgstr "Le sondage « %(title)s » a été rouvert !"
+
+#: voting/views.py:688
+#, python-format
+msgid "Poll \"%(title)s\" permanently deleted!"
+msgstr "Le sondage « %(title)s » a été définitivement supprimé !"
+
+#: voting/views.py:693
+#, python-format
+msgid "Results for \"%(title)s\" released! Voters can now view results."
+msgstr ""
+"Résultats pour « %(title)s » publiés ! Les votants peuvent maintenant voir "
+"les résultats."
+
+#: voting/views.py:697
+#, python-format
+msgid "Results for \"%(title)s\" are now hidden."
+msgstr "Les résultats pour « %(title)s » sont maintenant masqués."
+
+#: voting/views.py:699
+msgid "Poll not found."
+msgstr "Sondage introuvable."
+
+#: voting/views.py:702
+msgid "Error performing action."
+msgstr "Erreur lors de l'exécution de l'action."
+
+#: voting/views.py:837
+msgid "Invalid creator code. No polls found."
+msgstr "Code créateur invalide. Aucun sondage trouvé."
+
+#: voting/views.py:839
+msgid "Please enter a creator code."
+msgstr "Veuillez entrer un code créateur."
 
 # Index page
 #~ msgid "Condorcet Vote - Home"
@@ -1594,12 +1793,6 @@ msgstr ""
 
 #~ msgid "This poll is closed."
 #~ msgstr "Ce sondage est fermé."
-
-#~ msgid "Error recording vote. Please try again."
-#~ msgstr "Erreur lors de l'enregistrement du vote. Veuillez réessayer."
-
-#~ msgid "Your vote has been recorded!"
-#~ msgstr "Votre vote a été enregistré!"
 
 #~ msgid "Poll closed successfully"
 #~ msgstr "Sondage fermé avec succès"
