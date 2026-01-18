@@ -24,14 +24,22 @@ from django.http import JsonResponse, HttpResponseForbidden
 from django.core.exceptions import ValidationError
 from django.db import transaction, IntegrityError
 from django.conf import settings
+from django.utils.translation import gettext as _
 import json
 import logging
 
-from .models import Poll, Candidate, Vote, VoterSession
-from .forms import CreatePollForm, VoteForm
+from .models import Poll, Candidate, Vote, VoterSession, PollToken
+from .forms import CreatePollForm, VoteForm, AuthForm
 from .utils import (
-    calculate_condorcet_winner, validate_ranking, get_ranking_statistics
+    calculate_condorcet_winner, validate_ranking, get_ranking_statistics,
+    generate_qr_code, calculate_pairwise_results
 )
+from django.contrib.auth.hashers import make_password, check_password
+import secrets
+import hashlib
+from datetime import timedelta
+
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +72,24 @@ def create_poll(request):
                 with transaction.atomic():
                     # Create poll from form (is_public=False by default)
                     poll = form.save(commit=False)
-                    poll.is_public = False  # Private by default
+                    
+                    # Handle Deadline
+                    if form.cleaned_data.get('has_deadline'):
+                        duration = form.cleaned_data.get('deadline_duration')
+                        unit = form.cleaned_data.get('deadline_unit')
+                        
+                        if duration and unit:
+                            delta = None
+                            if unit == 'minutes':
+                                delta = timedelta(minutes=duration)
+                            elif unit == 'hours':
+                                delta = timedelta(hours=duration)
+                            elif unit == 'days':
+                                delta = timedelta(days=duration)
+                            
+                            if delta:
+                                poll.closing_date = timezone.now() + delta
+
                     poll.save()
                     
                     # Create candidates
@@ -74,6 +99,25 @@ def create_poll(request):
                             poll=poll,
                             name=candidate_name
                         )
+
+                    # Handle Secure Tokens
+                    if poll.requires_auth:
+                        voter_count = form.cleaned_data.get('voter_count', 0)
+                        tokens = []
+                        tokens_objects = []
+                        for _ in range(voter_count):
+                            # Generate a strong 20-char random token (alphanumeric)
+                            token = secrets.token_urlsafe(15) # 15 bytes -> approx 20 chars
+                            tokens.append(token)
+                            
+                            # Hash it for storage
+                            token_hash = make_password(token)
+                            tokens_objects.append(PollToken(poll=poll, token_hash=token_hash))
+                        
+                        PollToken.objects.bulk_create(tokens_objects)
+                        
+                        # Store tokens in session to display ONE TIME on confirmation page
+                        request.session['created_tokens'] = tokens
                     
                     logger.info(f"Poll created: {poll.id} with "
                                f"{len(candidates_list)} candidates, "
@@ -174,32 +218,72 @@ def vote_poll(request, poll_id):
     # Get poll and check it exists (and not deleted)
     poll = get_object_or_404(Poll, id=poll_id, is_deleted=False)
     
+    # Check expiration
+    if poll.closing_date and timezone.now() > poll.closing_date:
+        poll.is_active = False
+    
     # Check poll is active OR results are released (allow viewing if results released)
     if not poll.is_active and not poll.results_released:
-        messages.error(request, 'This poll is closed and results have not been released.')
+        messages.error(request, _('This poll is closed and results have not been released.'))
         return redirect('voting:index')
     
     # If poll is closed but results are released, redirect to results view
     if not poll.is_active and poll.results_released:
-        messages.info(request, 'This poll is closed. You can only view results.')
+        messages.info(request, _('This poll is closed. You can only view results.'))
         return redirect('voting:results_poll', poll_id=poll.id)
     
     # If poll is closed (and results not released), prevent voting
     if not poll.is_active:
-        messages.error(request, 'This poll is closed and results have not been released.')
+        messages.error(request, _('This poll is closed and results have not been released.'))
         return redirect('voting:index')
     
     # Check vote limit not reached
     if not poll.can_accept_votes():
         messages.error(request, 
-                      'This poll has reached maximum votes.')
+                      _('This poll has reached maximum votes.'))
         return redirect('index')
+
+    # AUTHENTICATION CHECK
+    if poll.requires_auth:
+        auth_session_key = f'auth_token_id_{poll.id}'
+        
+        # If user is not authenticated yet
+        if auth_session_key not in request.session:
+            # Handle Auth Form Submission
+            if request.method == 'POST' and 'password' in request.POST:
+                auth_form = AuthForm(request.POST)
+                if auth_form.is_valid():
+                    password = auth_form.cleaned_data['password']
+                    # Verify password against unused tokens
+                    # We iterate because we only have hashes
+                    unused_tokens = PollToken.objects.filter(poll=poll, is_used=False)
+                    found_token = None
+                    for t in unused_tokens:
+                        if check_password(password, t.token_hash):
+                            found_token = t
+                            break
+                    
+                    if found_token:
+                        # Success: Store token ID in session
+                        request.session[auth_session_key] = found_token.id
+                        messages.success(request, _('Authentication successful. You can now vote.'))
+                        return redirect('voting:vote_poll', poll_id=poll.id)
+                    else:
+                        messages.error(request, _('Invalid or already used password.'))
+            else:
+                auth_form = AuthForm()
+            
+            # Show Auth Page (blocking access to vote form)
+            return render(request, 'voting/auth.html', {
+                'poll': poll, 
+                'form': auth_form
+            })
     
     # Get candidates for this poll
     candidates = poll.get_candidates()
     
     if not candidates.exists():
-        messages.error(request, 'Poll has no candidates.')
+        messages.error(request, _('Poll has no candidates.'))
         return redirect('index')
     
     if request.method == 'POST':
@@ -216,7 +300,9 @@ def vote_poll(request, poll_id):
         vote_fingerprint = device_fingerprint
 
         # Only perform checks if multiple votes per device is NOT allowed
-        if not poll.allow_multiple_votes_per_device:
+        # EXCEPTION: If the poll requires authentication (Secure Poll), we allow multiple votes
+        # from the same device because each vote is authenticated by a unique token.
+        if not poll.allow_multiple_votes_per_device and not poll.requires_auth:
             cookie_token = getattr(request, 'voter_session_token', 'MISSING')
             
             logger.info(f"Vote attempt on poll {poll.id} | IP: {request.voter_ip} | "
@@ -243,7 +329,7 @@ def vote_poll(request, poll_id):
                             f"Cookie match: {existing_vote_session} | "
                             f"Poll: {poll.id}")
                 messages.error(request, 
-                            'You have already voted on this poll.')
+                            _('You have already voted on this poll.'))
                 return redirect('voting:vote_poll', poll_id=poll.id)
         else:
             # If multiple votes are allowed, we randomize the fingerprint for the Vote record
@@ -261,6 +347,33 @@ def vote_poll(request, poll_id):
         if form.is_valid():
             try:
                 with transaction.atomic():
+                    # Check Secure Token if required
+                    if poll.requires_auth:
+                        auth_session_key = f'auth_token_id_{poll.id}'
+                        token_id = request.session.get(auth_session_key)
+                        
+                        if not token_id:
+                            messages.error(request, _('Session expired. Please authenticate again.'))
+                            return redirect('voting:vote_poll', poll_id=poll.id)
+                        
+                        try:
+                            # Lock the row to prevent race conditions
+                            token_obj = PollToken.objects.select_for_update().get(id=token_id, poll=poll, is_used=False)
+                            token_obj.is_used = True
+                            token_obj.used_at = timezone.now()
+                            token_obj.save()
+                            
+                            # Clean up session
+                            if auth_session_key in request.session:
+                                del request.session[auth_session_key]
+                            
+                        except PollToken.DoesNotExist:
+                            messages.error(request, _('This password has already been used.'))
+                            # Clear invalid session
+                            if auth_session_key in request.session:
+                                del request.session[auth_session_key]
+                            return redirect('voting:vote_poll', poll_id=poll.id)
+
                     # Build ranking from form data
                     ranking = [''] * len(candidates)
                     
@@ -299,7 +412,7 @@ def vote_poll(request, poll_id):
                         # If multi-vote is disabled, this implies a race condition or inconsistency 
                         # because we checked for existence earlier.
                         # If multi-vote is enabled, this is normal behavior (same user voting again).
-                        if not poll.allow_multiple_votes_per_device:
+                        if not poll.allow_multiple_votes_per_device and not poll.requires_auth:
                              logger.warning(f"VoterSession existed but Vote didn't? Fingerprint: {device_fingerprint}")
                         
                         if hasattr(request, 'voter_session_token') and voter_session.cookie_token != request.voter_session_token:
@@ -316,20 +429,20 @@ def vote_poll(request, poll_id):
                     
                     logger.info(f"Vote recorded: {vote.id} on poll {poll.id} | "
                                 f"Session Token: {voter_session.cookie_token}")
-                    messages.success(request, 'Your vote has been recorded!')
+                    messages.success(request, _('Your vote has been recorded!'))
                     
                     return redirect('voting:results_poll', poll_id=poll.id)
             
             except IntegrityError as e:
                 # Catch unique constraint violation (likely cookie_token collision)
                 logger.warning(f"IntegrityError during vote (likely duplicate cookie): {str(e)}")
-                messages.error(request, 'You have already voted on this poll.')
+                messages.error(request, _('You have already voted on this poll.'))
                 return redirect('voting:vote_poll', poll_id=poll.id)
 
             except Exception as e:
                 logger.error(f"Error recording vote: {str(e)}")
                 messages.error(request, 
-                             'Error recording vote. Please try again.')
+                             _('Error recording vote. Please try again.'))
         else:
             # Form validation failed
             for field, errors in form.errors.items():
@@ -381,7 +494,7 @@ def results_poll(request, poll_id):
     # 2. User is the creator, OR
     # 3. Creator has explicitly released results while poll is active
     if poll.is_active and not (is_creator or poll.results_released):
-        messages.error(request, 'Results are only available after the poll is closed or when released by the creator.')
+        messages.error(request, _('Results are only available after the poll is closed or when released by the creator.'))
         return redirect('voting:index')
     
     # Get all votes for this poll
@@ -466,12 +579,25 @@ def results_poll(request, poll_id):
             stats = {}
             first_choice_data = []
             pairwise_list = []
-            messages.error(request, 'Error calculating results.')
+            messages.error(request, _('Error calculating results.'))
     else:
         winner = None
         stats = {}
         first_choice_data = []
         pairwise_list = []
+
+    # Calculate User's Verification IDs (for Transparency)
+    user_verification_ids = []
+    # Note: Only works effectively for single-vote polls where fingerprint is stable
+    if not poll.allow_multiple_votes_per_device:
+        device_fingerprint = Vote.generate_fingerprint(
+            getattr(request, 'voter_ip', '0.0.0.0'),
+            getattr(request, 'voter_user_agent', '')
+        )
+        u_votes = Vote.objects.filter(poll=poll, voter_fingerprint=device_fingerprint)
+        for v in u_votes:
+            v_id = hashlib.sha256((str(v.id) + settings.SECRET_KEY).encode()).hexdigest()
+            user_verification_ids.append(v_id)
     
     context = {
         'poll': poll,
@@ -512,7 +638,7 @@ def poll_confirmation(request, poll_id, creator_code):
     
     # Verify creator code matches (simple security check)
     if poll.creator_code != creator_code:
-        messages.error(request, 'Invalid creator code.')
+        messages.error(request, _('Invalid creator code.'))
         return redirect('voting:index')
     
     # Build voting URL using SITE_URL from settings
@@ -528,6 +654,10 @@ def poll_confirmation(request, poll_id, creator_code):
         'vote_url': vote_url,
         'qr_code_url': qr_code_url,
     }
+
+    # If this is the just-created redirect, display the tokens ONE TIME
+    if 'created_tokens' in request.session:
+        context['tokens'] = request.session.pop('created_tokens')
     
     return render(request, 'voting/poll_confirmation.html', context)
 
@@ -556,9 +686,15 @@ def creator_dashboard(request, creator_code):
         creator_code=creator_code,
         is_deleted=False
     ).order_by('-created_at')
+
+    # Update expiration status for displayed polls
+    for poll in polls:
+        if poll.is_active and poll.closing_date and timezone.now() > poll.closing_date:
+            poll.is_active = False
+            poll.save()
     
     if not polls.exists():
-        messages.error(request, 'No polls found for this creator code.')
+        messages.error(request, _('No polls found for this creator code.'))
         return redirect('voting:index')
     
     # Handle actions (make_public, close, delete)
@@ -586,27 +722,28 @@ def creator_dashboard(request, creator_code):
                 
             elif action == 'reopen':
                 poll.is_active = True
+                poll.closing_date = None
                 poll.save()
-                messages.success(request, f'Poll "{poll.title}" reopened!')
+                messages.success(request, _('Poll "%(title)s" reopened!') % {'title': poll.title})
                 
             elif action == 'delete':
                 # Permanently delete poll from DB (admin should not see it)
                 poll.delete()
-                messages.success(request, f'Poll "{poll.title}" permanently deleted!')
+                messages.success(request, _('Poll "%(title)s" permanently deleted!') % {'title': poll.title})
             elif action == 'release_results':
                 # Release results - poll stays open for viewing, voting is disabled when results are released
                 poll.results_released = True
                 poll.save()
-                messages.success(request, f'Results for \"{poll.title}\" released! Voters can now view results.')
+                messages.success(request, _('Results for "%(title)s" released! Voters can now view results.') % {'title': poll.title})
             elif action == 'hide_results':
                 poll.results_released = False
                 poll.save()
-                messages.success(request, f'Results for "{poll.title}" are now hidden.')
+                messages.success(request, _('Results for "%(title)s" are now hidden.') % {'title': poll.title})
         except Poll.DoesNotExist:
-            messages.error(request, 'Poll not found.')
+            messages.error(request, _('Poll not found.'))
         except Exception as e:
             logger.error(f"Error performing action: {str(e)}")
-            messages.error(request, 'Error performing action.')
+            messages.error(request, _('Error performing action.'))
         
         return redirect('voting:creator_dashboard', creator_code=creator_code)
     
@@ -622,7 +759,7 @@ def creator_dashboard(request, creator_code):
             votes_list = list(votes_queryset)
             try:
                 valid_candidate_ids = set(str(c.id) for c in poll.candidate_set.all())
-                winner_id, _ = calculate_condorcet_winner(votes_list, poll.tiebreaker_method, expected_candidates=valid_candidate_ids)
+                winner_id, _ignored_method = calculate_condorcet_winner(votes_list, poll.tiebreaker_method, expected_candidates=valid_candidate_ids)
                 winner = poll.candidate_set.get(id=winner_id) if winner_id else None
             except Exception:
                 pass
@@ -741,8 +878,84 @@ def dashboard_login(request):
             if Poll.objects.filter(creator_code=creator_code, is_deleted=False).exists():
                 return redirect('voting:creator_dashboard', creator_code=creator_code)
             else:
-                messages.error(request, 'Invalid creator code. No polls found.')
+                messages.error(request, _('Invalid creator code. No polls found.'))
         else:
-            messages.error(request, 'Please enter a creator code.')
+            messages.error(request, _('Please enter a creator code.'))
             
     return render(request, 'voting/dashboard_login.html')
+
+def download_results_json(request, poll_id):
+    """
+    Generate and download a JSON file containing all transparency data for a poll.
+    Includes:
+    - Poll Metadata
+    - List of anonymized votes (with Verification IDs)
+    - Pairwise comparison matrix (Condorcet data)
+    
+    Security:
+    - Only available if results are released OR user is creator.
+    - Vote IDs are hashed securely.
+    """
+    poll = get_object_or_404(Poll, id=poll_id, is_deleted=False)
+    
+    # Permission Check
+    is_creator = False
+    if "created_polls" in request.session and str(poll.id) in request.session["created_polls"]:
+         is_creator = True
+    elif request.GET.get("creator_code") == poll.creator_code:
+         is_creator = True
+         
+    if not is_creator and not poll.results_released:
+        return HttpResponseForbidden(_("Results are not yet released for this poll."))
+        
+    # Fetch Data
+    votes = Vote.objects.filter(poll=poll)
+    candidates = list(poll.get_candidates())
+    candidate_map = {str(c.id): c.name for c in candidates}
+    
+    # Build Votes List
+    votes_export = []
+    votes_raw_list = []
+    
+    for vote in votes:
+        # Generate Consistent Verification ID
+        # SHA256(Vote UUID + Server Secret)
+        # Unique to the vote instance, verifiable but anonymous.
+        verification_id = hashlib.sha256((str(vote.id) + settings.SECRET_KEY).encode()).hexdigest()
+        
+        # Resolve Ranking
+        ranked_names = [candidate_map.get(cid, f"Unknown({cid})") for cid in vote.ranking]
+        
+        votes_export.append({
+            "verification_id": verification_id,
+            "ranking": ranked_names
+        })
+        votes_raw_list.append(vote.ranking)
+        
+    # Calculate Matrix (Transparency on the process)
+    pairwise_matrix = {}
+    if votes_raw_list:
+        raw_matrix = calculate_pairwise_results(votes_raw_list, set(candidate_map.keys()))
+        for (a_id, b_id), count in raw_matrix.items():
+            name_a = candidate_map.get(a_id, a_id)
+            name_b = candidate_map.get(b_id, b_id)
+            pairwise_matrix[f"{name_a} vs {name_b}"] = count
+
+    data = {
+        "poll": {
+            "title": poll.title,
+            "id": str(poll.id),
+            "total_votes": len(votes),
+            "tiebreaker_method": poll.tiebreaker_method,
+            "generated_at": timezone.now().isoformat()
+        },
+        "candidates": [c.name for c in candidates],
+        "votes": votes_export,
+        "pairwise_matrix": pairwise_matrix,
+        "note": _("Each verification_id is a secure hash of the individual vote record.")
+    }
+    
+    response = JsonResponse(data, json_dumps_params={"indent": 2})
+    response["Content-Disposition"] = f"attachment; filename=\"results_{poll.id}.json\""
+    return response
+
