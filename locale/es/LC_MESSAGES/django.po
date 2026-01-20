@@ -1,12 +1,12 @@
 # Spanish translations for Condorcet Vote
 # Copyright (C) 2025
 # This file is distributed under the same license as the Condorcet Vote package.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Condorcet Vote 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-18 15:55+0000\n"
+"POT-Creation-Date: 2026-01-20 11:12+0000\n"
 "PO-Revision-Date: 2025-11-20 12:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
@@ -228,8 +228,47 @@ msgstr ""
 "candidatos en orden de preferencia:"
 
 #: voting/templates/voting/about_condorcet.html:40
-msgid "Example: \\"
-msgstr "Ejemplo: \\"
+msgid "Example: \"Best Option\""
+msgstr "Ejemplo: \"Mejor Opción\""
+
+#: voting/templates/voting/about_condorcet.html:41
+msgid "1st"
+msgstr "1º"
+
+#: voting/templates/voting/about_condorcet.html:41
+#: voting/templates/voting/about_condorcet.html:63
+#: voting/templates/voting/about_condorcet.html:79
+#: voting/templates/voting/about_condorcet.html:86
+#: voting/templates/voting/about_condorcet.html:93
+#: voting/templates/voting/about_condorcet.html:107
+msgid "Candidate A"
+msgstr "Candidato A"
+
+#: voting/templates/voting/about_condorcet.html:42
+msgid "2nd"
+msgstr "2º"
+
+#: voting/templates/voting/about_condorcet.html:42
+#: voting/templates/voting/about_condorcet.html:63
+#: voting/templates/voting/about_condorcet.html:80
+#: voting/templates/voting/about_condorcet.html:85
+#: voting/templates/voting/about_condorcet.html:92
+#: voting/templates/voting/about_condorcet.html:108
+msgid "Candidate B"
+msgstr "Candidato B"
+
+#: voting/templates/voting/about_condorcet.html:43
+msgid "3rd"
+msgstr "3º"
+
+#: voting/templates/voting/about_condorcet.html:43
+#: voting/templates/voting/about_condorcet.html:63
+#: voting/templates/voting/about_condorcet.html:81
+#: voting/templates/voting/about_condorcet.html:87
+#: voting/templates/voting/about_condorcet.html:91
+#: voting/templates/voting/about_condorcet.html:109
+msgid "Candidate C"
+msgstr "Candidato C"
 
 #: voting/templates/voting/about_condorcet.html:46
 msgid "Step 2: Pairwise Comparisons"
@@ -242,28 +281,35 @@ msgid ""
 msgstr "El sistema compara a cada candidato contra todos los demás uno a uno:"
 
 #: voting/templates/voting/about_condorcet.html:49
-msgid "Python vs JavaScript:"
-msgstr "Python vs JavaScript:"
+msgid "Candidate A vs Candidate B:"
+msgstr "Candidato A contra Candidato B:"
 
 #: voting/templates/voting/about_condorcet.html:49
-msgid "How many voters prefer Python? How many prefer JavaScript?"
-msgstr "¿Cuántos votantes prefieren Python? ¿Cuántos prefieren JavaScript?"
+msgid "How many voters prefer Candidate A? How many prefer Candidate B?"
+msgstr ""
+"¿Cuántos votantes prefieren el Candidato A? ¿Cuántos prefieren el Candidato "
+"B?"
 
 #: voting/templates/voting/about_condorcet.html:50
-msgid "Python vs Java:"
-msgstr "Python vs Java:"
+msgid "Candidate A vs Candidate C:"
+msgstr "Candidato A contra Candidato C:"
 
 #: voting/templates/voting/about_condorcet.html:50
-msgid "How many voters prefer Python? How many prefer Java?"
-msgstr "¿Cuántos votantes prefieren Python? ¿Cuántos prefieren Java?"
+msgid "How many voters prefer Candidate A? How many prefer Candidate C?"
+msgstr ""
+"¿Cuántos votantes prefieren el Candidato A? ¿Cuántos prefieren el Candidato "
+"C?"
 
 #: voting/templates/voting/about_condorcet.html:51
-msgid "JavaScript vs Java:"
-msgstr "JavaScript vs Java:"
+#: voting/templates/voting/about_condorcet.html:126
+msgid "Candidate B vs Candidate C:"
+msgstr "Candidato B contra Candidato C:"
 
 #: voting/templates/voting/about_condorcet.html:51
-msgid "How many voters prefer JavaScript? How many prefer Java?"
-msgstr "¿Cuántos votantes prefieren JavaScript? ¿Cuántos prefieren Java?"
+msgid "How many voters prefer Candidate B? How many prefer Candidate C?"
+msgstr ""
+"¿Cuántos votantes prefieren el Candidato B? ¿Cuántos prefieren el Candidato "
+"C?"
 
 #: voting/templates/voting/about_condorcet.html:54
 msgid "Step 3: Find the Winner"
@@ -286,11 +332,8 @@ msgid "Real Example: The Spoiler Effect"
 msgstr "Ejemplo real: El efecto spoiler"
 
 #: voting/templates/voting/about_condorcet.html:63
-msgid ""
-"Imagine a vote for the 'Best Programming Language' with three candidates:"
-msgstr ""
-"Imagina una votación para el 'Mejor lenguaje de programación' con tres "
-"candidatos:"
+msgid "Imagine a vote with three candidates:"
+msgstr "Imagine una votación con tres candidatos:"
 
 #: voting/templates/voting/about_condorcet.html:63
 msgid "and"
@@ -298,14 +341,13 @@ msgstr "y"
 
 #: voting/templates/voting/about_condorcet.html:64
 msgid ""
-"Python and Ruby are similar (modern, dynamic), while Assembly is very "
-"different (low-level). Ideally, the winner should reflect the majority's "
-"preference for modern languages, but traditional voting fails here."
+"Candidate A and Candidate B are similar, while Candidate C is very "
+"different. Ideally, the winner should reflect the majority's preference, but "
+"traditional voting fails here."
 msgstr ""
-"Python y Ruby son similares (modernos, dinámicos), mientras que Assembly es "
-"muy diferente (bajo nivel). Idealmente, el ganador debería reflejar la "
-"preferencia de la mayoría por los lenguajes modernos, pero la votación "
-"tradicional falla aquí."
+"El Candidato A y el Candidato B son similares, mientras que el Candidato C "
+"es muy diferente. Idealmente, el ganador debería reflejar la preferencia de "
+"la mayoría, pero la votación tradicional falla aquí."
 
 #: voting/templates/voting/about_condorcet.html:66
 msgid "Votes:"
@@ -342,6 +384,12 @@ msgstr "Votación tradicional (Escrutinio mayoritario)"
 msgid "Only 1st choices are counted:"
 msgstr "Solo se cuentan las primeras opciones:"
 
+#: voting/templates/voting/about_condorcet.html:109
+#: voting/templates/voting/results.html:38
+#: voting/templates/voting/results.html:130
+msgid "Winner"
+msgstr "Ganador"
+
 #: voting/templates/voting/about_condorcet.html:112
 msgid "Problem:"
 msgstr "Problema:"
@@ -349,12 +397,11 @@ msgstr "Problema:"
 #: voting/templates/voting/about_condorcet.html:112
 #, python-format
 msgid ""
-"Assembly wins even though 60%% of voters preferred a modern language (Python "
-"or Ruby). Python and Ruby split the vote, acting as spoilers for each other."
+"Candidate C wins even though 60%% of voters preferred either A or B. A and B "
+"split the vote, acting as spoilers for each other."
 msgstr ""
-"Assembly gana aunque el 60%% de los votantes prefería un lenguaje moderno "
-"(Python o Ruby). Python y Ruby dividieron el voto, actuando como "
-"saboteadores el uno del otro."
+"El Candidato C gana aunque el 60%% de los votantes prefería a A o a B. A y B "
+"dividieron el voto, actuando como 'spoilers' entre sí."
 
 #: voting/templates/voting/about_condorcet.html:120
 msgid "Condorcet Voting"
@@ -364,18 +411,40 @@ msgstr "Votación Condorcet"
 msgid "We compare head-to-head:"
 msgstr "Comparamos cara a cara:"
 
+#: voting/templates/voting/about_condorcet.html:127
+#: voting/templates/voting/about_condorcet.html:133
+msgid "B>A>C voters"
+msgstr "Votantes de B>A>C"
+
+#: voting/templates/voting/about_condorcet.html:127
+#: voting/templates/voting/about_condorcet.html:134
+msgid "A>B>C voters"
+msgstr "Votantes de A>B>C"
+
+#: voting/templates/voting/about_condorcet.html:128
+#: voting/templates/voting/about_condorcet.html:133
+msgid "C>B>A voters"
+msgstr "Votantes de C>B>A"
+
 #: voting/templates/voting/about_condorcet.html:129
 #: voting/templates/voting/about_condorcet.html:135
-msgid "Ruby wins"
-msgstr "Ruby gana"
+msgid "Candidate B wins"
+msgstr "El Candidato B gana"
+
+#: voting/templates/voting/about_condorcet.html:132
+msgid "Candidate B vs Candidate A:"
+msgstr "Candidato B contra Candidato A:"
 
 #: voting/templates/voting/about_condorcet.html:139
 msgid "Result:"
 msgstr "Resultado:"
 
 #: voting/templates/voting/about_condorcet.html:139
-msgid "Ruby beats everyone head-to-head. It is the true consensus winner."
-msgstr "Ruby vence a todos cara a cara. Es el verdadero ganador por consenso."
+msgid ""
+"Candidate B beats everyone head-to-head. It is the true consensus winner."
+msgstr ""
+"El Candidato B vence a todos en enfrentamientos directos. Es el verdadero "
+"ganador por consenso."
 
 #: voting/templates/voting/about_condorcet.html:149
 msgid "Why Condorcet is Superior"
@@ -992,7 +1061,7 @@ msgstr "Resultados"
 #: voting/templates/voting/creator_dashboard.html:121
 #: voting/templates/voting/creator_dashboard.html:125
 #: voting/templates/voting/index.html:69
-#: voting/templates/voting/results.html:170 voting/templates/voting/vote.html:4
+#: voting/templates/voting/results.html:169 voting/templates/voting/vote.html:4
 msgid "Vote"
 msgstr "Votar"
 
@@ -1066,7 +1135,7 @@ msgid "Create New Poll"
 msgstr "Crear nueva encuesta"
 
 #: voting/templates/voting/creator_dashboard.html:225
-#: voting/templates/voting/results.html:188
+#: voting/templates/voting/results.html:187
 msgid "Share Poll"
 msgstr "Compartir encuesta"
 
@@ -1077,7 +1146,7 @@ msgstr "Enlace de votación:"
 #: voting/templates/voting/creator_dashboard.html:233
 #: voting/templates/voting/poll_confirmation.html:37
 #: voting/templates/voting/poll_confirmation.html:103
-#: voting/templates/voting/results.html:198
+#: voting/templates/voting/results.html:197
 msgid "Copy"
 msgstr "Copiar"
 
@@ -1377,11 +1446,6 @@ msgid "Condorcet Winner"
 msgstr "Ganador de Condorcet"
 
 #: voting/templates/voting/results.html:38
-#: voting/templates/voting/results.html:131
-msgid "Winner"
-msgstr "Ganador"
-
-#: voting/templates/voting/results.html:38
 msgid "via"
 msgstr "vía"
 
@@ -1425,61 +1489,63 @@ msgstr "Votantes únicos"
 msgid "First Choice Votes"
 msgstr "Votos de primera opción"
 
-#: voting/templates/voting/results.html:123
+#: voting/templates/voting/results.html:122
 msgid "Head-to-Head Matchups"
 msgstr "Enfrentamientos directos"
 
-#: voting/templates/voting/results.html:129
+#: voting/templates/voting/results.html:128
 msgid "Matchup"
 msgstr "Enfrentamiento"
 
-#: voting/templates/voting/results.html:130
+#: voting/templates/voting/results.html:129
 msgid "Votes"
 msgstr "Votos"
 
-#: voting/templates/voting/results.html:145
+#: voting/templates/voting/results.html:144
 msgid "Tie"
 msgstr "Empate"
 
-#: voting/templates/voting/results.html:166
+#: voting/templates/voting/results.html:165
 msgid "Actions"
 msgstr "Acciones"
 
-#: voting/templates/voting/results.html:174
+#: voting/templates/voting/results.html:173
 msgid "Poll Closed"
 msgstr "Encuesta cerrada"
 
-#: voting/templates/voting/results.html:179
+#: voting/templates/voting/results.html:178
 msgid "Back to Polls"
 msgstr "Volver a las encuestas"
 
-#: voting/templates/voting/results.html:202
+#: voting/templates/voting/results.html:201
 msgid "Share this link to get more votes"
 msgstr "Comparte este enlace para obtener más votos"
 
-#: voting/templates/voting/results.html:210
+#: voting/templates/voting/results.html:209
 msgid "Transparency"
 msgstr "Transparencia"
 
-#: voting/templates/voting/results.html:214
+#: voting/templates/voting/results.html:213
 msgid ""
 "Verify the results manually by downloading the full anonymized vote dataset."
-msgstr "Verifique los resultados manualmente descargando el conjunto completo de datos de votación anonimizados."
+msgstr ""
+"Verifique los resultados manualmente descargando el conjunto completo de "
+"datos de votación anonimizados."
 
-#: voting/templates/voting/results.html:218
+#: voting/templates/voting/results.html:217
 msgid "Download JSON Data"
 msgstr "Descargar datos JSON"
 
-#: voting/templates/voting/results.html:224
+#: voting/templates/voting/results.html:223
 msgid "Your Verification ID(s):"
 msgstr "Su(s) ID de verificación:"
 
 # About Condorcet page
-#: voting/templates/voting/results.html:239
+#: voting/templates/voting/results.html:238
 msgid "Condorcet Method"
 msgstr "Método Condorcet"
 
-#: voting/templates/voting/results.html:241
+#: voting/templates/voting/results.html:240
 msgid ""
 "The winner is the candidate who would beat all others in one-on-one "
 "matchups. This method is considered the fairest way to find a consensus "
@@ -1489,7 +1555,7 @@ msgstr ""
 "uno a uno. Este método se considera la forma más justa de encontrar una "
 "opción de consenso."
 
-#: voting/templates/voting/results.html:257
+#: voting/templates/voting/results.html:256
 msgid "Copied!"
 msgstr "¡Copiado!"
 
@@ -1653,7 +1719,35 @@ msgstr "Los resultados aún no se han publicado para esta encuesta."
 
 #: voting/views.py:955
 msgid "Each verification_id is a secure hash of the individual vote record."
-msgstr "Cada verification_id es un hash seguro del registro de voto individual."
+msgstr ""
+"Cada verification_id es un hash seguro del registro de voto individual."
+
+#~ msgid "Example: \\"
+#~ msgstr "Ejemplo: \\"
+
+#~ msgid "Python vs JavaScript:"
+#~ msgstr "Python vs JavaScript:"
+
+#~ msgid "How many voters prefer Python? How many prefer JavaScript?"
+#~ msgstr "¿Cuántos votantes prefieren Python? ¿Cuántos prefieren JavaScript?"
+
+#~ msgid "Python vs Java:"
+#~ msgstr "Python vs Java:"
+
+#~ msgid "How many voters prefer Python? How many prefer Java?"
+#~ msgstr "¿Cuántos votantes prefieren Python? ¿Cuántos prefieren Java?"
+
+#~ msgid "JavaScript vs Java:"
+#~ msgstr "JavaScript vs Java:"
+
+#~ msgid ""
+#~ "Imagine a vote for the 'Best Programming Language' with three candidates:"
+#~ msgstr ""
+#~ "Imagina una votación para el 'Mejor lenguaje de programación' con tres "
+#~ "candidatos:"
+
+#~ msgid "Ruby wins"
+#~ msgstr "Ruby gana"
 
 #~ msgid "Welcome to Condorcet Vote"
 #~ msgstr "Bienvenido a Voto Condorcet"

@@ -37,18 +37,18 @@
                 <h4>{% trans "Step 1: Voters Rank Candidates" %}</h4>
                 <p>{% trans "Instead of voting for just one candidate, voters rank ALL candidates in order of preference:" %}</p>
                 <div class="bg-light p-3 rounded mb-3">
-                    {% trans "Example: \"Best Programming Language\"" %}<br>
-                    1st: Python<br>
-                    2nd: JavaScript<br>
-                    3rd: Java
+                    {% trans 'Example: "Best Option"' %}<br>
+                    {% trans "1st" %}: {% trans "Candidate A" %}<br>
+                    {% trans "2nd" %}: {% trans "Candidate B" %}<br>
+                    {% trans "3rd" %}: {% trans "Candidate C" %}
                 </div>
 
                 <h4>{% trans "Step 2: Pairwise Comparisons" %}</h4>
                 <p>{% trans "The system compares each candidate against every other candidate head-to-head:" %}</p>
                 <div class="bg-light p-3 rounded mb-3">
-                    <strong>{% trans "Python vs JavaScript:" %}</strong> {% trans "How many voters prefer Python? How many prefer JavaScript?" %}<br>
-                    <strong>{% trans "Python vs Java:" %}</strong> {% trans "How many voters prefer Python? How many prefer Java?" %}<br>
-                    <strong>{% trans "JavaScript vs Java:" %}</strong> {% trans "How many voters prefer JavaScript? How many prefer Java?" %}
+                    <strong>{% trans "Candidate A vs Candidate B:" %}</strong> {% trans "How many voters prefer Candidate A? How many prefer Candidate B?" %}<br>
+                    <strong>{% trans "Candidate A vs Candidate C:" %}</strong> {% trans "How many voters prefer Candidate A? How many prefer Candidate C?" %}<br>
+                    <strong>{% trans "Candidate B vs Candidate C:" %}</strong> {% trans "How many voters prefer Candidate B? How many prefer Candidate C?" %}
                 </div>
 
                 <h4>{% trans "Step 3: Find the Winner" %}</h4>
@@ -60,8 +60,8 @@
             <!-- Example -->
             <section class="mb-5">
                 <h2>{% trans "Real Example: The Spoiler Effect" %}</h2>
-                <p>{% trans "Imagine a vote for the 'Best Programming Language' with three candidates:" %} <strong>Python</strong>, <strong>Ruby</strong>, {% trans "and" %} <strong>Assembly</strong>.</p>
-                <p>{% trans "Python and Ruby are similar (modern, dynamic), while Assembly is very different (low-level). Ideally, the winner should reflect the majority's preference for modern languages, but traditional voting fails here." %}</p>
+                <p>{% trans "Imagine a vote with three candidates:" %} <strong>{% trans "Candidate A" %}</strong>, <strong>{% trans "Candidate B" %}</strong>, {% trans "and" %} <strong>{% trans "Candidate C" %}</strong>.</p>
+                <p>{% trans "Candidate A and Candidate B are similar, while Candidate C is very different. Ideally, the winner should reflect the majority's preference, but traditional voting fails here." %}</p>
 
                 <p><strong>{% trans "Votes:" %}</strong> {% trans "100 voters ranked them as follows:" %}</p>
                 <table class="table table-striped">
@@ -76,21 +76,21 @@
                     <tbody>
                         <tr>
                             <td>35</td>
-                            <td>Python</td>
-                            <td>Ruby</td>
-                            <td>Assembly</td>
+                            <td>{% trans "Candidate A" %}</td>
+                            <td>{% trans "Candidate B" %}</td>
+                            <td>{% trans "Candidate C" %}</td>
                         </tr>
                         <tr>
                             <td>25</td>
-                            <td>Ruby</td>
-                            <td>Python</td>
-                            <td>Assembly</td>
+                            <td>{% trans "Candidate B" %}</td>
+                            <td>{% trans "Candidate A" %}</td>
+                            <td>{% trans "Candidate C" %}</td>
                         </tr>
                         <tr>
                             <td>40</td>
-                            <td>Assembly</td>
-                            <td>Ruby</td>
-                            <td>Python</td>
+                            <td>{% trans "Candidate C" %}</td>
+                            <td>{% trans "Candidate B" %}</td>
+                            <td>{% trans "Candidate A" %}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -104,12 +104,12 @@
                             <div class="card-body">
                                 <p class="card-text">{% trans "Only 1st choices are counted:" %}</p>
                                 <ul>
-                                    <li>Python: 35%</li>
-                                    <li>Ruby: 25%</li>
-                                    <li><strong>Assembly: 40% (Winner)</strong></li>
+                                    <li>{% trans "Candidate A" %}: 35%</li>
+                                    <li>{% trans "Candidate B" %}: 25%</li>
+                                    <li><strong>{% trans "Candidate C" %}: 40% ({% trans "Winner" %})</strong></li>
                                 </ul>
                                 <p class="text-danger">
-                                    <strong>{% trans "Problem:" %}</strong> {% trans "Assembly wins even though 60% of voters preferred a modern language (Python or Ruby). Python and Ruby split the vote, acting as spoilers for each other." %}
+                                    <strong>{% trans "Problem:" %}</strong> {% trans "Candidate C wins even though 60% of voters preferred either A or B. A and B split the vote, acting as spoilers for each other." %}
                                 </p>
                             </div>
                         </div>
@@ -123,20 +123,20 @@
                                 <p class="card-text">{% trans "We compare head-to-head:" %}</p>
                                 <ul>
                                     <li>
-                                        <strong>Ruby vs Assembly:</strong><br>
-                                        25 (Ruby voters) + 35 (Python voters) = 60<br>
-                                        vs 40 (Assembly voters)<br>
-                                        → <strong>{% trans "Ruby wins" %}</strong> (60% > 40%)
+                                        <strong>{% trans "Candidate B vs Candidate C:" %}</strong><br>
+                                        25 ({% trans "B>A>C voters" %}) + 35 ({% trans "A>B>C voters" %}) = 60<br>
+                                        vs 40 ({% trans "C>B>A voters" %})<br>
+                                        → <strong>{% trans "Candidate B wins" %}</strong> (60% > 40%)
                                     </li>
                                     <li>
-                                        <strong>Ruby vs Python:</strong><br>
-                                        25 (Ruby voters) + 40 (Assembly voters) = 65<br>
-                                        vs 35 (Python voters)<br>
-                                        → <strong>{% trans "Ruby wins" %}</strong> (65% > 35%)
+                                        <strong>{% trans "Candidate B vs Candidate A:" %}</strong><br>
+                                        25 ({% trans "B>A>C voters" %}) + 40 ({% trans "C>B>A voters" %}) = 65<br>
+                                        vs 35 ({% trans "A>B>C voters" %})<br>
+                                        → <strong>{% trans "Candidate B wins" %}</strong> (65% > 35%)
                                     </li>
                                 </ul>
                                 <p class="text-success">
-                                    <strong>{% trans "Result:" %}</strong> {% trans "Ruby beats everyone head-to-head. It is the true consensus winner." %}
+                                    <strong>{% trans "Result:" %}</strong> {% trans "Candidate B beats everyone head-to-head. It is the true consensus winner." %}
                                 </p>
                             </div>
                         </div>
